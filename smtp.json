@@ -762,5 +762,34 @@
                 "input_file": "wheels/py3/webencodings-0.6.1-py3-none-any.whl"
             }
         ]
+    },
+    "contributors": [
+        {
+            "name": "Gary Ian Rokas"
+        }
+    ],
+    "pip313_dependencies_aarch64": {
+        "wheel": [
+            {
+                "module": "bleach",
+                "input_file": "wheels/py3/bleach-6.2.0-py3-none-any.whl"
+            },
+            {
+                "module": "bleach_allowlist",
+                "input_file": "wheels/shared/bleach_allowlist-1.0.3-py2.py3-none-any.whl"
+            },
+            {
+                "module": "pytidyhtml5",
+                "input_file": "wheels/py313/pytidyhtml5-2024.10.24-cp313-cp313-manylinux_2_17_aarch64.manylinux2014_aarch64.whl"
+            },
+            {
+                "module": "tinycss2",
+                "input_file": "wheels/py3/tinycss2-1.4.0-py3-none-any.whl"
+            },
+            {
+                "module": "webencodings",
+                "input_file": "wheels/py3/webencodings-0.6.1-py3-none-any.whl"
+            }
+        ]
     }
 }
