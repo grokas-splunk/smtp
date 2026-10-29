@@ -23,12 +23,13 @@ import smtplib
 import ssl
 import sys
 import time
-from email import encoders, message_from_file, message_from_string
+from email import encoders, message_from_bytes, message_from_string
 from email.mime.base import MIMEBase
 from email.mime.image import MIMEImage
 from email.mime.message import MIMEMessage
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
+from email.policy import SMTP
 
 import bleach
 import encryption_helper
@@ -779,10 +780,9 @@ class SmtpConnector(BaseConnector):
                         msg = MIMEText(fp.read(), _subtype=subtype)
                         fp.close()
                     elif maintype == "message":
-                        fp = open(file_path)
-                        base_msg = message_from_file(fp)
+                        with open(file_path, "rb") as fp:
+                            base_msg = message_from_bytes(fp.read())
                         msg = MIMEMessage(base_msg, _subtype=subtype)
-                        fp.close()
                     elif maintype == "image":
                         fp = open(file_path, "rb")
                         msg = MIMEImage(fp.read(), _subtype=subtype)
@@ -958,7 +958,7 @@ class SmtpConnector(BaseConnector):
             mail_options = list()
             if smtputf8:
                 mail_options.append("SMTPUTF8")
-            refused_recipients = self._smtp_conn.sendmail(email_from, to_list, outer.as_string(), mail_options=mail_options)
+            refused_recipients = self._smtp_conn.sendmail(email_from, to_list, outer.as_bytes(policy=SMTP), mail_options=mail_options)
             if refused_recipients:
                 return self._set_refused_recipients_error(action_result, refused_recipients)
         except UnicodeEncodeError:
@@ -1274,8 +1274,8 @@ class SmtpConnector(BaseConnector):
                             attachment = MIMEText(fp.read(), _subtype=subtype)
 
                     elif maintype == "message":
-                        with open(path) as fp:
-                            base_msg = message_from_file(fp)
+                        with open(path, "rb") as fp:
+                            base_msg = message_from_bytes(fp.read())
                             attachment = MIMEMessage(base_msg, _subtype=subtype)
 
                     elif maintype == "image":
@@ -1307,7 +1307,7 @@ class SmtpConnector(BaseConnector):
             mail_options = list()
             if smtputf8:
                 mail_options.append("SMTPUTF8")
-            refused_recipients = self._smtp_conn.sendmail(email_from, email_to, root.as_string(), mail_options=mail_options)
+            refused_recipients = self._smtp_conn.sendmail(email_from, email_to, root.as_bytes(policy=SMTP), mail_options=mail_options)
             if refused_recipients:
                 return self._set_refused_recipients_error(action_result, refused_recipients)
 
@@ -1365,7 +1365,7 @@ class SmtpConnector(BaseConnector):
             if smtputf8:
                 mail_options.append("SMTPUTF8")
             self.debug_print("Making SMTP call")
-            refused_recipients = self._smtp_conn.sendmail(email_from, email_to, msg.as_string(), mail_options=mail_options)
+            refused_recipients = self._smtp_conn.sendmail(email_from, email_to, msg.as_bytes(policy=SMTP), mail_options=mail_options)
             if refused_recipients:
                 return self._set_refused_recipients_error(action_result, refused_recipients)
 
